@@ -27,4 +27,4 @@ void Inicializa_Bolsa(int k,int N,struct heap B_C[k],struct heap Nodos[N],unsign
 void ingresa_en_bolsa(int k,int i,struct heap B_C[k],int * removed,struct heap *Nodos,unsigned char **Matrix);
 unsigned char es_Adyacente(int count,int id1,struct Nodos * B_C,unsigned char **Matrix);
 void N_mono(int k,struct heap B_C[k],unsigned char **Matrix);
-void Imprime_Bolsa(int k,struct heap B_C[k]);
+void Imprime_Bolsa(int c,int k,struct heap B_C[k]);

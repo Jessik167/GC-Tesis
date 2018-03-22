@@ -56,12 +56,12 @@ unsigned char es_Adyacente(int count,int id1,struct Nodos * B_C,unsigned char **
     }
     return 0;
 }
-void Imprime_Bolsa(int k,struct heap B_C[k])
+void Imprime_Bolsa(int c,int k,struct heap B_C[k])
 {
     printf("----------------------------\n");
     int i;
     //Imprime las bolsas
-    for (i=0;i<k;i++)
+    for (i=0;i<c;i++)
          heap_display(&B_C[i],k);
 }
 void N_mono(int k,struct heap B_C[k],unsigned char **Matrix)
@@ -117,7 +117,9 @@ void Inicializa_Bolsa(int k,int N,struct heap B_C[k],struct heap *Nodos,unsigned
             heap_delete(Nodos, removed);
             i=0;
             //Imprime Nodos
-            Imprime_Bolsa(k,B_C);
+            Imprime_Bolsa(k,k,B_C);
+            //Imprime Nodos
+            Imprime_Bolsa(1,k,Nodos);
         }
         else
         {
@@ -128,7 +130,9 @@ void Inicializa_Bolsa(int k,int N,struct heap B_C[k],struct heap *Nodos,unsigned
                 heap_delete(Nodos, removed);
                 i=0;
                 //Imprime Nodos
-                Imprime_Bolsa(k,B_C);
+                Imprime_Bolsa(k,k,B_C);
+                //Imprime Nodos
+                 Imprime_Bolsa(1,k,Nodos);
             }
             else
                 i++;
@@ -148,7 +152,7 @@ void Inicializa_Bolsa(int k,int N,struct heap B_C[k],struct heap *Nodos,unsigned
         i=rand()%k;
         ingresa_en_bolsa(k,i,B_C,removed,Nodos,Matrix);
         //Imprime Nodos
-        Imprime_Bolsa(k,B_C);
+        Imprime_Bolsa(k,k,B_C);
     }
     free(removed);
 }

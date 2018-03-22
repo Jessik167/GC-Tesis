@@ -74,8 +74,8 @@ void main(int argc, char const *argv[])
                 //N_mono(k,B_Colores,M);
                 
                 //Imprime las bolsas
-                Imprime_Bolsa(k,B_Colores);
-                Imprime_Bolsa(1,Nodos_G);
+                Imprime_Bolsa(k,k,B_Colores);
+                Imprime_Bolsa(1,k,Nodos_G);
                 //Libera la matriz
                 free(M);
                 free(Nodos_G);

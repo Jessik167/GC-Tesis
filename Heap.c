@@ -80,7 +80,8 @@ void max_heapify_mono(struct Nodos* data, int loc, int count)
 }
 void max_heapify(struct Nodos* data, int loc, int count)
 {
-	int left, right, lowest, temp,temp2,temp3,temp4, *temp5;
+	int left, right, lowest, temp,temp2,temp3,temp4;
+        char *temp5;
  	left = 2*(loc) + 1;
 	right = left + 1;
 	lowest = loc;
@@ -101,6 +102,7 @@ void max_heapify(struct Nodos* data, int loc, int count)
                 temp2 = data[loc].id;
                 temp3 = data[loc].grado;
                 temp4 = data[loc].N_clasesp;
+                temp5=data[loc].C_invalidas;
 		data[loc] = data[lowest];
 		data[lowest].N_mono = temp;
                 data[lowest].id=temp2;
@@ -138,7 +140,7 @@ void heap_push_mono(struct heap *h, int value, int Id, int grad)
 }
 void update_mapa(struct Nodos* data,int id,int i)
 {
-    data[id].C_invalidas[i]='1';
+    data[id].C_invalidas[i]=1;
 }
 char consulta_mapa(struct Nodos* data,int id,int i)
 {
@@ -180,7 +182,7 @@ void build_minheap (struct Nodos* data,int N)
     for(i = N/2 ; i >= 1 ; i--)
         max_heapify(data, i,N);
 }
-void heap_display(struct heap *h,int k) 
+void heap_display(struct heap *h,int k)
 {
 	int i,j;
         printf("|ind-(id_nodo)-N_mono-clases-grado|\n");
@@ -202,6 +204,7 @@ void heap_delete(struct heap *h, int* removed)
 	int temp_mono = h->heaparr[count].N_mono;
         int temp_clases = h->heaparr[count].N_clasesp;
  	int temp_grado = h->heaparr[count].grado;
+        char *temp_mapa = h->heaparr[count].C_invalidas;
 	//Reasigna la memoria
 	if ((h->count <= (h->size + 2)) && (h->size > initial_size))
 	{
@@ -219,6 +222,7 @@ void heap_delete(struct heap *h, int* removed)
         h->heaparr[0].N_mono = temp_mono;
         h->heaparr[0].N_clasesp = temp_clases;
         h->heaparr[0].grado = temp_grado;
+        h->heaparr[0].C_invalidas = temp_mapa;
         //reordena
  	max_heapify(h->heaparr, 0, h->count);
 }
