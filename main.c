@@ -42,7 +42,7 @@ void main(int argc, char const *argv[])
                 //Imprime la matriz de adyacencia
                 Imprime_Matriz(M,N);
                 //Imprime un elemento de la matriz
-                printf("\nvalue:%d\n",get_value(M,6,10));
+                printf("\nvalue:%d\n",get_value(M,10,2));
                 /*printf("value:%d\n",get_value(M,2,1));
                 printf("value:%d\n",get_value(M,2,2));
                 printf("value:%d\n",get_value(M,2,3));
@@ -74,7 +74,8 @@ void main(int argc, char const *argv[])
                 //N_mono(k,B_Colores,M);
                 
                 //Imprime las bolsas
-                Imprime_Bolsa(k,k,B_Colores);
+                //Imprime_Bolsa(k,k,B_Colores);
+                printf("**NODOS**\n");
                 Imprime_Bolsa(1,k,Nodos_G);
                 //Libera la matriz
                 free(M);
@@ -85,6 +86,7 @@ void main(int argc, char const *argv[])
 void N_grado(struct heap Nodos_G[1],unsigned char **Matrix,int c)
 {
     int id=0,id1=0,grad;
+    char* mapa;
     //recorre todos los nodos
     for(id=0;id<N;id++)
     {
@@ -95,7 +97,7 @@ void N_grado(struct heap Nodos_G[1],unsigned char **Matrix,int c)
                 if(get_value(Matrix,id,id1)!=0)
                         grad++;
         }
-        heap_push(&Nodos_G[0], 0, id, grad,c);
+        heap_push(&Nodos_G[0], 0, id, grad,c,mapa,-1);
         //if(c>0)
         //        c=rand()%k+1;
     }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define true 1
 #define false 0
 
@@ -78,10 +79,10 @@ void max_heapify_mono(struct Nodos* data, int loc, int count)
 		max_heapify_mono(data, largest, count);
 	}
 }
-void max_heapify(struct Nodos* data, int loc, int count)
+void max_heapify(struct Nodos* data, int loc, int count,char* temp5)
 {
 	int left, right, lowest, temp,temp2,temp3,temp4;
-        char *temp5;
+        //char *temp5=malloc(sizeof(char)*k);
  	left = 2*(loc) + 1;
 	right = left + 1;
 	lowest = loc;
@@ -102,14 +103,17 @@ void max_heapify(struct Nodos* data, int loc, int count)
                 temp2 = data[loc].id;
                 temp3 = data[loc].grado;
                 temp4 = data[loc].N_clasesp;
-                temp5=data[loc].C_invalidas;
+                memcpy(&temp5,&data[loc].C_invalidas,sizeof(data[loc].C_invalidas));
+                
 		data[loc] = data[lowest];
+                
 		data[lowest].N_mono = temp;
                 data[lowest].id=temp2;
                 data[lowest].grado=temp3;
                 data[lowest].N_clasesp=temp4;
-                data[lowest].C_invalidas=temp5;
-		max_heapify(data, lowest, count);
+                memcpy(&data[lowest].C_invalidas,&temp5,sizeof(temp5));                
+                //free(temp5);
+		max_heapify(data, lowest, count,temp5);
 	}
 }
 
@@ -138,15 +142,15 @@ void heap_push_mono(struct heap *h, int value, int Id, int grad)
         h->heaparr[index].id=Id;
         h->heaparr[index].grado=grad;
 }
-void update_mapa(struct Nodos* data,int id,int i)
+void update_mapa(struct Nodos data,int i)
 {
-    data[id].C_invalidas[i]=1;
+    data.C_invalidas[i]=1;
 }
-char consulta_mapa(struct Nodos* data,int id,int i)
+char consulta_mapa(struct Nodos data,int i)
 {
-    return data[id].C_invalidas[i];
+    return data.C_invalidas[i];
 }
-void heap_push(struct heap *h, int nmono, int Id, int grad,int clases)
+void heap_push(struct heap *h, int nmono, int Id, int grad,int clases,char* clas_inv,int opc)
 {
 	int index, parent;
  
@@ -169,19 +173,24 @@ void heap_push(struct heap *h, int nmono, int Id, int grad,int clases)
                 h->heaparr[index].grado = h->heaparr[parent].grado;
                 h->heaparr[index].id = h->heaparr[parent].id;
                 h->heaparr[index].N_mono = h->heaparr[parent].N_mono;
+                if(opc!=-1)
+                    memcpy(&h->heaparr[index].C_invalidas,&h->heaparr[parent].C_invalidas,sizeof(h->heaparr[parent].C_invalidas));
                 
 	}
 	h->heaparr[index].N_mono=nmono;
         h->heaparr[index].id=Id;
         h->heaparr[index].grado=grad;
         h->heaparr[index].N_clasesp=clases;
+        if(opc!=-1)
+            memcpy(&h->heaparr[index].C_invalidas,&clas_inv,sizeof(clas_inv));
 }
-void build_minheap (struct Nodos* data,int N) 
+/*void build_minheap (struct Nodos* data,int N) 
 {
     int i;
     for(i = N/2 ; i >= 1 ; i--)
-        max_heapify(data, i,N);
-}
+        //max_heapify(data, i,N);
+        
+}*/
 void heap_display(struct heap *h,int k)
 {
 	int i,j;
@@ -196,15 +205,16 @@ void heap_display(struct heap *h,int k)
 	printf("\n");
 }
 
-void heap_delete(struct heap *h, int* removed)
+char* heap_delete(struct heap *h, int* removed,char* mapa,char* temp_mapa)
 {
         int count=--h->count;
+        //char* temp_mapa=malloc(sizeof(char)*k);
         //Toma los valores del nodo anterior a eliminar
         int temp_id = h->heaparr[count].id;
 	int temp_mono = h->heaparr[count].N_mono;
         int temp_clases = h->heaparr[count].N_clasesp;
  	int temp_grado = h->heaparr[count].grado;
-        char *temp_mapa = h->heaparr[count].C_invalidas;
+        memcpy(&temp_mapa,&h->heaparr[count].C_invalidas,sizeof(h->heaparr[count].C_invalidas));
 	//Reasigna la memoria
 	if ((h->count <= (h->size + 2)) && (h->size > initial_size))
 	{
@@ -217,14 +227,18 @@ void heap_delete(struct heap *h, int* removed)
         removed[1] = h->heaparr[0].N_mono;
         removed[2] = h->heaparr[0].N_clasesp;
         removed[3] = h->heaparr[0].grado;
+        memcpy(&mapa,&h->heaparr[0].C_invalidas,sizeof(h->heaparr[0].C_invalidas));
         //agrega la información del nodo anterior al último en la lista
  	h->heaparr[0].id = temp_id;
         h->heaparr[0].N_mono = temp_mono;
         h->heaparr[0].N_clasesp = temp_clases;
         h->heaparr[0].grado = temp_grado;
-        h->heaparr[0].C_invalidas = temp_mapa;
+        //h->heaparr[0].C_invalidas = temp_mapa;
+        memcpy(&h->heaparr[0].C_invalidas,&temp_mapa,sizeof(temp_mapa));
         //reordena
- 	max_heapify(h->heaparr, 0, h->count);
+ 	max_heapify(h->heaparr, 0, h->count,temp_mapa);
+        return mapa;
+        //free(temp_mapa);
 }
 void ver_arreglo(struct heap *h,int id, int* arr)
 {
@@ -240,12 +254,14 @@ void heap_update(struct heap *h,int nmono, int grad, int clases, int ind)
     if(clases!=-1)
         h->heaparr[ind].N_clasesp = clases;
 }
-void emptyPQ(struct heap *pq,int *removed)
+void emptyPQ(struct heap *pq,int *removed,char* mapa,int k,char* temp_mapa)
 {
 	int i;
         while(pq->count != 0) 
         {
-            heap_delete(pq,removed);
+            heap_delete(pq,removed,mapa,temp_mapa);
             printf("<<%d- %d- %d- %d",removed[0],removed[1],removed[2],removed[3]);
+            for(i=0;i<k;i++)
+                printf("%d| ",mapa[i]);
 	}
 }
