@@ -2,77 +2,89 @@
 #include <stdlib.h>
 #include "Heap.h"
 #include "Matriz-reducida.h"
+#define tam_inicial_bolsas 20
 int K=4;
 
-void Imprime_Bolsa(int c,int k,struct heap B_C[k])
+void Imprime_Bolsas(int numBolsas,struct heap * B_C)
 {
     printf("----------------------------\n");
     int i;
     //Imprime las bolsas
-    for (i=0;i<c;i++)
-         heap_display(&B_C[i],k);
+    for (i=0;i<numBolsas;i++)
+         heap_display(&B_C[i]);
 }
-void disminuye_clases(int count,int id1,int j,int k,struct heap * data,unsigned char **Matrix)
+void Imprime_Heap(struct heap * heap)
+{
+    printf("----------------------------\n");
+    heap_display(heap);
+}
+void disminuye_clases(int id1,int j,int k,struct heap * h_nodos,unsigned char **Matrix)
 {
     int i;
     //Arreglo que toma id y clases de un nodo del arreglo de nodos
     int I_C[2];
     //recorre el índice del arreglo de nodos
-    for(i=0;i<count;i++)
+    for(i=0;i<h_nodos->count;i++)
     {
          //toma el primer elemento del arreglo
-        ver_arreglo(data,i,I_C);
+        ver_arreglo(h_nodos,i,I_C);
         //verifica si existe adyacencia con el nodo expulsado
-        if(get_value(Matrix,id1,I_C[0]/*id*/)==1)
+        if(es_vecino(Matrix,id1,I_C[0]/*id*/)==1)
         {
             //Pregunta si el nodo en su arreglo clases inválidas contiene un cero (un adyacente ya se encuentra en esta bolsa) 
-            if(consulta_mapa(data->heaparr[i],j)==0)
+            //--if(consulta_mapa(data->heaparr[i],j)==0)
             {
-                char* temp_mapa=malloc(sizeof(char)*k);
+                //--char* temp_mapa=malloc(sizeof(char)*k);
                 //disminuye la clase
-                heap_update(data,-1/*N_mono*/, -1/*grado*/, I_C[1]-1/*clases*/, i/*índice*/);
+                heap_update(h_nodos,-1/*N_mono*/, -1/*grado*/, I_C[1]-1/*clases*/, i/*índice*/);
                 //ingresa ocupado el color j
-                update_mapa(data->heaparr[i],j);
+                //--update_mapa(data->heaparr[i],j);
                 //printf("**NODOS**\n");
-                //Imprime_Bolsa(1,K,data);
-                //reordena
-                max_heapify(data->heaparr, 0, data->count,temp_mapa);
+                //Imprime_Bolsas(1,K,data);
                 //Imprime Nodos
                 printf("**NODOS**\n");
-                Imprime_Bolsa(1,K,data);
-                free(temp_mapa);
+                Imprime_Bolsas(K,h_nodos);
+                //--free(temp_mapa);
             }
         }
     }
+    //reordena
+    build_maxheap(h_nodos->heaparr,h_nodos->count);
+    //Imprime Nodos
+    printf("**NODOS REACOMODADOS**\n");
+    Imprime_Bolsas(K,h_nodos);
 }
 
-char* ingresa_en_bolsa(int k,int i,struct heap B_C[k],int * removed,char* mapa,struct heap *Nodos,unsigned char **Matrix,char* temp_mapa)
+void ingresa_en_bolsa(int numBolsa,struct heap * bolsasColores,int * nuevoNodo/*,char* mapa*/,struct heap * heapNodos,unsigned char **Matrix)
 {
         //ingresa el nodo en la bolsa actual
-        heap_push(&B_C[i], removed[1]/*n_mono*/, removed[0]/*id*/, removed[3]/*grado*/,removed[2]/*clases*/,mapa/*Clases inválidas*/,0);  
+        heap_push(&bolsasColores[numBolsa], nuevoNodo[0]/*id*/,nuevoNodo[1]/*n_mono*/,nuevoNodo[2]/*clases*/,nuevoNodo[3]/*grado*//*,mapa/*Clases inválidas*//*,0*/);
         //Si el grado es mayor a cero disminuye las clases (si no, no tiene adyacencias)
-        if(removed[3]/*grado*/>0)
-                disminuye_clases(Nodos->count,removed[0]/*id*/,i,k,Nodos,Matrix);
-        mapa=heap_delete(Nodos, removed,mapa,temp_mapa);
-        return mapa;
+        //if(nuevoNodo[3]/*grado*/>0)
+               //disminuye_clases(nuevoNodo[0]/*id*/,numBolsa,numColores,heapNodos,Matrix);
+        //--mapa=
+        //if(removed[0]==5)
+        //    printf("told 'ya\n");
+        //return mapa;
 }
-unsigned char es_Adyacente(int count,int id1,struct Nodos * B_C,unsigned char **Matrix)
+unsigned char esCompatibleBolsa(int numeroNodosBolsa,int idNodo,struct Nodos * contenidoBolsa,unsigned char **Matrix)
 {
     int id2;
     //Verifica que la bolsa tenga más de un nodo
-    if(count>=1)
+    if(numeroNodosBolsa>=1)
     {
-        for(id2=0;id2<count;id2++)
+        //recorre todos los nodos de la bolsa y busca adyacencias
+        for(id2=0;id2<numeroNodosBolsa;id2++)
         {
-             if(get_value(Matrix,id1,B_C[id2].id)==1)
-                 return 1;
+             if(es_vecino(Matrix,idNodo,contenidoBolsa[id2].id)==1)
+                 return 0;
         }  
     }
-    return 0;
+    return 1;
 }
 void N_mono(int k,struct heap B_C[k],unsigned char **Matrix)
 {
-    unsigned int i,j,id1,id2,nm=0;
+    unsigned int i,id1,id2,nm=0;//,j
     for (i=0;i<k;i++)
     {
         id2=0;
@@ -85,82 +97,60 @@ void N_mono(int k,struct heap B_C[k],unsigned char **Matrix)
                 {
                     if(id1!=id2)
                     {
-                        if(get_value(Matrix,B_C[i].heaparr[id1].id-1,B_C[i].heaparr[id2].id-1)!=0)
+                        if(es_vecino(Matrix,B_C[i].heaparr[id1].id-1,B_C[i].heaparr[id2].id-1)!=0)
                             nm++;
                     }
-                }  
-                //heap_update(&B_C[i],nm,-1,id1);   
-                //Imprime_Bolsas(k,B_C);
+                }
                 nm=0;
             }
         }
         max_heapify_mono(B_C[i].heaparr, 0, B_C[i].count);
     }
 }
-void Inicializa_Bolsa(int k,int N,struct heap B_C[k],struct heap *Nodos,unsigned char **Matrix)
+void Inicializa_Bolsas(int k,int N,struct heap * B_C)
 {
-    int id,i=0;
-    //vector en donde guarda información del nodo
-    int *removed;
-    char * mapa;
-    mapa=malloc(k*sizeof(char));
-    char* temp_mapa=malloc(sizeof(char)*k);
-    removed=malloc(4*sizeof(int));
-    //Inicializa las bolsas
+    int id;
+     //Inicializa las bolsas
     for (id=0;id<k;id++)
-        heap_init(&B_C[id],N,k);
-    //Toma el primer nodo del heap de los nodos
-    heap_delete(Nodos, removed, mapa,temp_mapa);
-    
-    //hasta que las clases permitidas del nodo a insertar sea cero ó Ya no hay más nodos en el heap
-    while(removed[2]>0 && Nodos->count+1>0)
+        heap_init(&B_C[id],tam_inicial_bolsas,k);
+}
+void InsertaEnBolsaAleatoria(struct heap * heapBolsas,int *nuevoNodo,int numColores)
+{
+    int BolsaAleatoria=rand()%numColores;
+    heap_push(&heapBolsas[BolsaAleatoria], nuevoNodo[1]/*n_mono*/, nuevoNodo[0]/*id*/, nuevoNodo[3]/*grado*/,nuevoNodo[2]/*clases*//*,mapa/*Clases inválidas*//*,0*/);
+}
+void Llena_Bolsas(int k,int N,struct heap * B_C,struct heap *heapNodos,unsigned char **Matrix)
+{
+    int i=0;
+    //vector en donde guarda información del nodo que extrae
+    int *nuevoNodo;
+    nuevoNodo=malloc(4*sizeof(int));
+    //inicializa las bolsas de colores
+    Inicializa_Bolsas(k,N,B_C);
+    while(heapNodos->count>0)
     {
-        //Pregunta si la bolsa actual está vacía
-        if(B_C[i].count==0)
+        heap_delete(heapNodos, nuevoNodo/*,mapa,k*/);
+        
+        while(i<k && esCompatibleBolsa(B_C[i].count,nuevoNodo[0]/*id*/,B_C[i].heaparr,Matrix)==0)
+            i++;
+        
+        if(i<k)
         {
-            mapa=ingresa_en_bolsa(k,i,B_C,removed,mapa,Nodos,Matrix,temp_mapa);
-            i=0;
-            //Imprime Nodos
-            printf("**BOLSA**\n");
-            Imprime_Bolsa(k,k,B_C);
-            //Imprime Nodos
-            printf("**NODOS**\n");
-            Imprime_Bolsa(1,k,Nodos);
+            ingresa_en_bolsa(i,B_C,nuevoNodo/*,mapa*/,heapNodos,Matrix);
         }
         else
         {
-            if(es_Adyacente(B_C[i].count,removed[0]/*id*/,B_C[i].heaparr,Matrix)!=1)
-            {
-                mapa=ingresa_en_bolsa(k,i,B_C,removed,mapa,Nodos,Matrix,temp_mapa);
-                i=0;
-                //Imprime Nodos
-                printf("**BOLSA**\n");
-                Imprime_Bolsa(k,k,B_C);
-                //Imprime Nodos
-                printf("**NODOS**\n");
-                 Imprime_Bolsa(1,k,Nodos);
-            }
-            else
-                i++;
-        }
+            printf("No hay bolsas compatibles\n");
+            fflush(stdout);
+            InsertaEnBolsaAleatoria(B_C,nuevoNodo,k);
+            break;
+        }    
+        i=0;
     }
-    
-    //recorre las bolsas de colores
-    /*for(i=0;i<k;i++)
+    while(heapNodos->count>0)
     {
-        //Toma el primer nodo del heap de los nodos
-        heap_delete(Nodos, removed);
-        if(es_Adyacente(B_C->count,removed[0]/*id,B_C[i],Matrix)!=0)
-                ingresa_en_bolsa(k,i,B_C,removed,Nodos,Matrix);
-    }/
-    while(Nodos->count>0)
-    {
-        i=rand()%k;
-        ingresa_en_bolsa(k,i,B_C,removed,mapa,Nodos,Matrix);
-        //Imprime Nodos
-        Imprime_Bolsa(k,k,B_C);
-    }*/
-    free(removed);
-    free(mapa);
-    free(temp_mapa);
+        heap_delete(heapNodos, nuevoNodo/*,mapa,k*/);
+        InsertaEnBolsaAleatoria(B_C,nuevoNodo,k);
+    }
+    free(nuevoNodo);
 }

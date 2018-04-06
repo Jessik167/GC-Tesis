@@ -12,13 +12,14 @@
 #include "Heap.h"
 #include "Matriz-reducida.h"
 #include "Bolsas-Colores.h"
+
 /*
  * 
  */
-int N;
-int k=4;
+int NumNodos;
+int numColores=2;
 //Prototipo
-void N_grado(struct heap Nodos_G[1],unsigned char **Matrix,int c);
+void Llena_nodos_grado(struct heap *Nodos_G,unsigned char **Matrix,int c);
 
 void main(int argc, char const *argv[])
 {
@@ -31,77 +32,67 @@ void main(int argc, char const *argv[])
 	{
 		//Declaración de variables
                 srand(time(NULL));
-                int i,j;
                 unsigned char **M;
                 //Toma el valor del número de nodos de la línea de comandos
-		N=atoi(argv[2]);
+		NumNodos=atoi(argv[2]);
                 //Crea la Matriz de bits
-                M=Inicializa_Matriz(N,M);
+                M=Inicializa_Matriz(NumNodos);
                 //Llena la matriz deacuerdo al nombre del archivo
-                Llena_Matriz(argv[1],N,M);
+                Llena_Matriz(argv[1],NumNodos,M);
                 //Imprime la matriz de adyacencia
-                Imprime_Matriz(M,N);
+                Imprime_Matriz(M,NumNodos);
                 //Imprime un elemento de la matriz
-                printf("\nvalue:%d\n",get_value(M,10,2));
-                /*printf("value:%d\n",get_value(M,2,1));
-                printf("value:%d\n",get_value(M,2,2));
-                printf("value:%d\n",get_value(M,2,3));
-                printf("value:%d\n",get_value(M,2,4));
-                printf("value:%d\n",get_value(M,2,5));
-                printf("value:%d\n",get_value(M,2,6));
-                printf("value:%d\n",get_value(M,2,7));
-                printf("value:%d\n",get_value(M,2,8));
-                printf("value:%d\n",get_value(M,2,9));
-                printf("value:%d\n",get_value(M,2,10));*/
-                //Crea estructura de grado de nodos
-                struct heap *Nodos_G;
+                printf("\nvalue:%d\n",es_vecino(M,10,2));
+                
+                struct heap Nodos_G;
                 //asigna memoria
-                Nodos_G=malloc(sizeof(Nodos_G));
+                //Nodos_G=malloc(sizeof(struct heap));
                 //Inicializa la estructura de grado de nodos
-                heap_init(Nodos_G,N,k);
+                heap_init(&Nodos_G,NumNodos,numColores);
                 //calcula el grado de los vértices
-                N_grado(Nodos_G,M,k);
-                printf("---------------------------------------\n");
-                heap_display(Nodos_G,k);
+                Llena_nodos_grado(&Nodos_G,M,numColores);
+                Imprime_Heap(&Nodos_G);
                 
                 //Inicializa la configuración de los individuos
-                struct heap B_Colores[k];
+                struct heap * B_Colores;
+                //asigna memoria
+                B_Colores=malloc(sizeof(struct heap)*numColores);
                 //Inicializa las bolsas de colores
-                Inicializa_Bolsa(k,N,B_Colores,Nodos_G,M);
+                Llena_Bolsas(numColores,NumNodos,B_Colores,&Nodos_G,M);
                 //Imprime las bolsas
-                //Imprime_Bolsa(k,B_Colores);
+                Imprime_Bolsas(numColores,B_Colores);
                 //Verifica el número de aristas monocromáticas
-                //N_mono(k,B_Colores,M);
+                //N_mono(numColores,B_Colores,M);
                 
                 //Imprime las bolsas
-                //Imprime_Bolsa(k,k,B_Colores);
-                printf("**NODOS**\n");
-                Imprime_Bolsa(1,k,Nodos_G);
+                //Imprime_Bolsas(numColores,B_Colores);
+                //printf("**NODOS**\n");
+                //Imprime_Bolsa(Nodos_G);
                 //Libera la matriz
+                //--free_arr(B_Colores,numColores);
+                //--free_arr(Nodos_G,1);
                 free(M);
-                free(Nodos_G);
-                //emptyPQ(Nodos_G);
+                printf(":D!!\n");
 	}
 }
-void N_grado(struct heap Nodos_G[1],unsigned char **Matrix,int c)
+void Llena_nodos_grado(struct heap *Nodos_G,unsigned char **Matrix,int c)
 {
     int id=0,id1=0,grad;
-    char* mapa;
+    //--char* mapa;
     //recorre todos los nodos
-    for(id=0;id<N;id++)
+    for(id=0;id<NumNodos;id++)
     {
         grad=0;
         for(id1=0;id1<N;id1++)
         {
             //if(id!=id1)
-                if(get_value(Matrix,id,id1)!=0)
+                if(es_vecino(Matrix,id,id1)!=0)
                         grad++;
         }
-        heap_push(&Nodos_G[0], 0, id, grad,c,mapa,-1);
+        heap_push(Nodos_G,id,0,c,grad/*,mapa,-1*/);
         //if(c>0)
         //        c=rand()%k+1;
     }
-    //build_minheap(&Nodos_G[0],N);
 }
 
 

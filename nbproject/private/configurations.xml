@@ -25,12 +25,10 @@
       <runprofile version="9">
         <runcommandpicklist>
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}"  Grafo1 250</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}"  Grafo2-myciel3 16</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}"  Grafo2-myciel3 11 -lm</runcommandpicklistitem>
-          <runcommandpicklistitem>"${OUTPUT_PATH}"  Grafo2-myciel3 11</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" </runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" Grafo2-myciel3 11</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}"  Grafo2-myciel3 11</runcommand>
+        <runcommand>"${OUTPUT_PATH}" Grafo2-myciel3 11</runcommand>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <terminal-type>0</terminal-type>

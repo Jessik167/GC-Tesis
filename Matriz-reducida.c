@@ -8,10 +8,10 @@ double TM;
     //M= (unsigned char**) calloc(N, sizeof(unsigned char *));
     return M;
 }*/
-unsigned char** Inicializa_Matriz(int N,unsigned char **M)
+unsigned char** Inicializa_Matriz(int N)
 {
     int j;
-    M= malloc(N*sizeof(unsigned char *));
+    unsigned char **M= malloc(N*sizeof(unsigned char *));
     TM=(double)N/8;
     TM=ceil(TM)*8;
     //Asigna memoria por cada elemento de la matriz
@@ -73,7 +73,7 @@ void Imprime_Matriz(unsigned char ** M,int N)
         printf("\n");
     }
 }
-unsigned char get_value(unsigned char** M,int i, int j)
+unsigned char es_vecino(unsigned char** M,int i, int j)
 {
     int recorrimiento;
     unsigned char mask=128;

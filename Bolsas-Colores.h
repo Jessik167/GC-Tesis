@@ -21,10 +21,13 @@ extern "C" {
 
 #endif	/* BOLSAS_COLORES_H */
 
-void disminuye_clases(int count,int id1,int j,int k,struct heap * data,unsigned char **Matrix);
+void disminuye_clases(int id1,int j,int k,struct heap * data,unsigned char **Matrix);
 //void disminuye_clases(int count,int id1,struct heap * data,struct Nodos * B_C,unsigned char **Matrix);
-void Inicializa_Bolsa(int k,int N,struct heap B_C[k],struct heap Nodos[N],unsigned char **Matrix);
-char* ingresa_en_bolsa(int k,int i,struct heap B_C[k],int * removed,char* mapa,struct heap *Nodos,unsigned char **Matrix,char* temp_mapa);
-unsigned char es_Adyacente(int count,int id1,struct Nodos * B_C,unsigned char **Matrix);
+void Llena_Bolsas(int k,int N,struct heap * B_C,struct heap *Nodos,unsigned char **Matrix);
+void Inicializa_Bolsas(int k,int N,struct heap * B_C);
+void ingresa_en_bolsa(int numBolsa,struct heap * bolsasColores,int * nuevoNodo/*,char* mapa*/,struct heap * heapNodos,unsigned char **Matrix);
+void Imprime_Heap(struct heap * heap);
+void InsertaEnBolsaAleatoria(struct heap * heapBolsas,int *nuevoNodo,int numColores);
+unsigned char esCompatibleBolsa(int numeroNodosBolsa,int idNodo,struct Nodos * contenidoBolsa,unsigned char **Matrix);
 void N_mono(int k,struct heap B_C[k],unsigned char **Matrix);
-void Imprime_Bolsa(int c,int k,struct heap B_C[k]);
+void Imprime_Bolsas(int numBolsas,struct heap * B_C);

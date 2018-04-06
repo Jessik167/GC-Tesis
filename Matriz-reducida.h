@@ -21,7 +21,7 @@ extern "C" {
 
 #endif	/* MATRIZ_REDUCIDA_H */
 int N;
-unsigned char** Inicializa_Matriz(int N,unsigned char **M);
+unsigned char** Inicializa_Matriz(int N);
 void Llena_Matriz(const char* nombre,int N,unsigned char **M);
 void Imprime_Matriz(unsigned char ** M,int N);
-unsigned char get_value(unsigned char** M,int i, int j);
+unsigned char es_vecino(unsigned char** M,int i, int j);

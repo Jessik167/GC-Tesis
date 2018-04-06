@@ -41,7 +41,11 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <cTool>
+          <commandlineTool>gcc</commandlineTool>
+        </cTool>
         <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/cg_v3</output>
           <linkerLibItems>
             <linkerOptionItem>-lm</linkerOptionItem>
           </linkerLibItems>
