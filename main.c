@@ -17,7 +17,7 @@
  * 
  */
 int NumNodos;
-int numColores=2;
+int numColores=4;
 //Prototipo
 void Llena_nodos_grado(struct heap *Nodos_G,unsigned char **Matrix,int c);
 
@@ -63,33 +63,29 @@ void main(int argc, char const *argv[])
                 Imprime_Bolsas(numColores,B_Colores);
                 //Verifica el número de aristas monocromáticas
                 //N_mono(numColores,B_Colores,M);
-                
-                //Imprime las bolsas
-                //Imprime_Bolsas(numColores,B_Colores);
-                //printf("**NODOS**\n");
-                //Imprime_Bolsa(Nodos_G);
-                //Libera la matriz
+                            
                 //--free_arr(B_Colores,numColores);
                 //--free_arr(Nodos_G,1);
+                //Libera la matriz
                 free(M);
                 printf(":D!!\n");
 	}
 }
-void Llena_nodos_grado(struct heap *Nodos_G,unsigned char **Matrix,int c)
+void Llena_nodos_grado(struct heap *Nodos_G,unsigned char **Matrix,int clases)
 {
-    int id=0,id1=0,grad;
+    int id=0,id1=0,grad,nmono=0;
     //--char* mapa;
     //recorre todos los nodos
     for(id=0;id<NumNodos;id++)
     {
         grad=0;
-        for(id1=0;id1<N;id1++)
+        for(id1=0;id1<NumNodos;id1++)
         {
             //if(id!=id1)
                 if(es_vecino(Matrix,id,id1)!=0)
                         grad++;
         }
-        heap_push(Nodos_G,id,0,c,grad/*,mapa,-1*/);
+        heap_push(Nodos_G,id,nmono,clases,grad/*,mapa,-1*/);
         //if(c>0)
         //        c=rand()%k+1;
     }
