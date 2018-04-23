@@ -23,7 +23,7 @@ struct heap
 
 int *heap, size, count;
 int initial_size;
-
+/*Asigna memoria del tamaño dado por parámetro*/
 void heap_init(struct heap *h, int tam, int k)
 {
         //--int i;
@@ -40,6 +40,7 @@ void heap_init(struct heap *h, int tam, int k)
         //for(i=0;i<initial_size;i++)
         //    h->heaparr[i].C_invalidas = calloc(k,sizeof(char));
 }
+/*Muestra los datos de la estructura del heap que recibe por parámetro*/
 void heap_display(struct heap *h/*,int k*/)
 {
 	int i;//j;
@@ -55,6 +56,8 @@ void heap_display(struct heap *h/*,int k*/)
 	}
 	printf("\n");
 }
+/*función que recibe la clase del nodo actual, clase del nodo a comparar,
+ grado del nodo actual y grado del nodo a comparar*/
 unsigned char menor_que(int a1,int a2,int b1,int b2)
 {
     if(a1>a2)
@@ -96,6 +99,8 @@ void max_heapify_mono(struct Nodos* data, int loc, int count)
 		max_heapify_mono(data, largest, count);
 	}
 }
+/*Modifica el orden del arbol desde el nodo actual, envíado por parámetro
+ Partiendo del supuesto de que los nodos izquierdo y derecho ya son un max-heapify*/
 void max_heapify(struct Nodos* data, int loc, int count/*,int k*/)
 {
 	int left, right, lowest, temp,temp2,temp3,temp4;
@@ -163,14 +168,19 @@ void heap_push_mono(struct heap *h, int value, int Id, int grad)
         h->heaparr[index].id=Id;
         h->heaparr[index].grado=grad;
 }
+/*Ingresa un uno en el índice del vector de clases inválidas, para indicar que
+ *  se encuentra ocupada*/
 void update_mapa(struct Nodos data,int i)
 {
     data.C_invalidas[i]=1;
 }
+/*Consulta el índice del vector de clases inválidas, para saber si está ocupada o no*/
 char consulta_mapa(struct Nodos data,int i)
 {
     return data.C_invalidas[i];
 }
+/*Ingresa los valores de la estructura en la posición correspondiente, de acuerdo
+ a las propiedades del max-heapify*/
 void heap_push(struct heap *h/*, int k*/,int Id,int nmono,int clases,int grad/*,char* clas_inv,int opc*/)
 {
 	int index, parent;
@@ -215,13 +225,17 @@ void heap_push(struct heap *h/*, int k*/,int Id,int nmono,int clases,int grad/*,
         //if(opc!=-1)
         //    memcpy(&h->heaparr[index].C_invalidas,&clas_inv,sizeof(char)*k);
 }
+/*Recorre de la mitad del árbol hacia arriba (por niveles), y llama a max-heapify
+ para reordenar todo el árbol/heap */
 void build_maxheap(struct Nodos* data,int N) 
 {
     int i;
     for(i = N/2 ; i >= 0 ; i--)
         max_heapify(data, i,N);        
 }
-
+/*Toma los valores del último nodo en una variable temporal, en removed toma los
+ *  valores del nodo raíz y los temporales los asigna al nodo raíz, por último 
+ * manda llamar a max-heapify para asegurarse de que no viole las propiedades*/
 void/*char**/ heap_delete(struct heap *h, int* removed/*,char* mapa,int k*/)
 {
 #ifdef DEBUG
@@ -276,11 +290,14 @@ void/*char**/ heap_delete(struct heap *h, int* removed/*,char* mapa,int k*/)
         //free(temp_mapa);
         //return mapa;
 }
+/*Toma los valores id y Número de clases esperadas de un nodo en específico*/
 void ver_arreglo(struct heap *h,int id, int* arr)
 {
      arr[0]=h->heaparr[id].id;
      arr[1]=h->heaparr[id].N_clasesp;
 }
+/*De acuerdo al valor de número monocromático, grado o clases (si es diferente de -1),
+ *  actualiza el valor de un nodo en específico deacuerdo con su índice*/
 void heap_update(struct heap *h,int nmono, int grad, int clases, int ind)
 {
     if(nmono!=-1)
@@ -290,12 +307,14 @@ void heap_update(struct heap *h,int nmono, int grad, int clases, int ind)
     if(clases!=-1)
         h->heaparr[ind].N_clasesp = clases;
 }
+/*Libera la memoria asignada para el mapa de clases inválidas*/
 void free_arr(struct heap *pq, int k)
 {
     int i;
     for(i=0;i<k;i++)
         free(pq->heaparr[i].C_invalidas);
 }
+/*Elimina todos los nodos del heap y muestra la información de los eliminados*/
 void emptyPQ(struct heap *pq,int *removed,char* mapa,int k,char* temp_mapa)
 {
 	int i;
