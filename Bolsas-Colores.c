@@ -44,8 +44,8 @@ void disminuye_clases(int nodoActual,int indiceMapa,int numColores,struct heap *
                 //printf("**NODOS**\n");
                 //Imprime_Bolsas(1,K,data);
                 //Imprime Nodos
-                printf("**NODOS**\n");
-                Imprime_Bolsas(numColores,h_nodos);
+                //printf("**NODOS**\n");
+                //Imprime_Heap(h_nodos);
                 //--free(temp_mapa);
             }
         }
@@ -54,7 +54,7 @@ void disminuye_clases(int nodoActual,int indiceMapa,int numColores,struct heap *
     build_maxheap(h_nodos->heaparr,h_nodos->count);
     //Imprime Nodos
     printf("**NODOS REACOMODADOS**\n");
-    Imprime_Bolsas(numColores,h_nodos);
+    Imprime_Heap(h_nodos);
 }
 /*Ingresa el nodo nuevo en la bolsa sin conflicto del heap*/
 void ingresa_en_bolsa(int numBolsa,int numColores,struct heap * bolsasColores,int * nuevoNodo/*,char* mapa*/,struct heap * heapNodos,unsigned char **Matrix)
@@ -62,8 +62,8 @@ void ingresa_en_bolsa(int numBolsa,int numColores,struct heap * bolsasColores,in
         //ingresa el nodo en la bolsa actual
         heap_push(&bolsasColores[numBolsa], nuevoNodo[0]/*id*/,nuevoNodo[1]/*n_mono*/,nuevoNodo[2]/*clases*/,nuevoNodo[3]/*grado*//*,mapa/*Clases inválidas*//*,0*/);
         //Si el grado es mayor a cero disminuye las clases (si no, no tiene adyacencias)
-        //if(nuevoNodo[3]/*grado*/>0)
-        //       disminuye_clases(nuevoNodo[0]/*id*/,numBolsa,numColores,heapNodos,Matrix);
+        if(nuevoNodo[3]/*grado*/>0)
+               disminuye_clases(nuevoNodo[0]/*id*/,numBolsa,numColores,heapNodos,Matrix);
         //--mapa=
         //if(removed[0]==5)
         //    printf("told 'ya\n");

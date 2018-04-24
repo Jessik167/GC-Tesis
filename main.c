@@ -12,7 +12,7 @@
 #include "Heap.h"
 #include "Matriz-reducida.h"
 #include "Bolsas-Colores.h"
-
+#define tam_nodos 1
 /*
  * 
  */
@@ -49,7 +49,7 @@ void main(int argc, char const *argv[])
                 //Nodos_G=malloc(sizeof(struct heap));
                 //Inicializa la estructura de grado de nodos
                 heap_init(&Nodos_G,NumNodos,numColores);
-                //calcula el grado de los vértices
+                //calcula el grado de los vértices y los inserta en la bolsa de nodos
                 Llena_nodos_grado(&Nodos_G,M,numColores);
                 Imprime_Heap(&Nodos_G);
                 
@@ -60,6 +60,7 @@ void main(int argc, char const *argv[])
                 //Inicializa las bolsas de colores
                 Llena_Bolsas(numColores,NumNodos,B_Colores,&Nodos_G,M);
                 //Imprime las bolsas
+                printf("**BOLSAS DE COLORES**\n");
                 Imprime_Bolsas(numColores,B_Colores);
                 //Verifica el número de aristas monocromáticas
                 //N_mono(numColores,B_Colores,M);

@@ -4,7 +4,7 @@
 #define true 1
 #define false 0
 #define DEBUG 1
-
+/*Estructura que guarda la información de los nodos*/
 struct Nodos
 {
 	int id;
@@ -13,7 +13,7 @@ struct Nodos
         int N_clasesp;
         char * C_invalidas;
 };
-
+/*Estructura del Heap con la información del mismo*/
 struct heap 
 {
 	int size;
@@ -26,7 +26,7 @@ int initial_size;
 /*Asigna memoria del tamaño dado por parámetro*/
 void heap_init(struct heap *h, int tam, int k)
 {
-        //--int i;
+        int i;
         initial_size=tam;
 	h->count = 0;
 
@@ -37,22 +37,23 @@ void heap_init(struct heap *h, int tam, int k)
 		printf("Error allocating memory...\n");
 		exit(-1);
 	}
-        //for(i=0;i<initial_size;i++)
-        //    h->heaparr[i].C_invalidas = calloc(k,sizeof(char));
+        /*for(i=0;i<initial_size;i++)
+            h->heaparr[i].C_invalidas = calloc(k,sizeof(char));
+         */
 }
 /*Muestra los datos de la estructura del heap que recibe por parámetro*/
 void heap_display(struct heap *h/*,int k*/)
 {
-	int i;//j;
+	int i,j;
         printf("|ind-(id_nodo)-N_mono-clases-grado|\n");
         fflush(stdout);
 	for(i=0; i<h->count; i++) 
         {
 		printf("|%d- (%d)- %d - %d - %d\n", i,h->heaparr[i].id+1,h->heaparr[i].N_mono,h->heaparr[i].N_clasesp,h->heaparr[i].grado);
                 fflush(stdout);
-                //for(j=0;j<k;j++)
-                //        printf("%d |",h->heaparr[i].C_invalidas[j]);
-                //printf("\n|");
+                /*for(j=0;j<k;j++)
+                        printf("%d |",h->heaparr[i].C_invalidas[j]);
+                printf("\n|");*/
 	}
 	printf("\n");
 }
@@ -131,7 +132,7 @@ void max_heapify(struct Nodos* data, int loc, int count/*,int k*/)
                 data[loc].id = data[lowest].id;
                 data[loc].grado = data[lowest].grado;
                 data[loc].N_clasesp = data[lowest].N_clasesp;
-                
+                //memcpy(&data[loc].C_invalidas,&data[lowest].C_invalidas,sizeof(char)*k);
                 
 		data[lowest].N_mono = temp;
                 data[lowest].id=temp2;
@@ -140,6 +141,7 @@ void max_heapify(struct Nodos* data, int loc, int count/*,int k*/)
                 //memcpy(&data[lowest].C_invalidas,&temp5,sizeof(char)*k);
                 //free(temp5);
 		max_heapify(data, lowest, count/*,k*/);
+                //free(temp5);
 	}
 }
 
